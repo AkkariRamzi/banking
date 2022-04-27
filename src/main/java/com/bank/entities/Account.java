@@ -12,13 +12,15 @@ public class Account {
 	private String rib;
 	private BigDecimal balance;
 	private DateFormat dateformat;
+	private Printer printer;
 
 	private List<Transaction> transactions = new ArrayList<Transaction>();
 
-	public Account(String rib, BigDecimal balance, DateFormat dateformat) {
+	public Account(String rib, BigDecimal balance, DateFormat dateformat, Printer printer) {
 		this.rib = rib;
 		this.balance = balance;
 		this.dateformat = dateformat;
+		this.printer = printer;
 	}
 
 	public String getRib() {
@@ -76,5 +78,14 @@ public class Account {
 					balance);
 			transactions.add(0, transaction);
 		}
+	}
+
+	/**
+	 * Print all Transaction for specific account
+	 * 
+	 * @param account
+	 */
+	public void printStatement() {
+		printer.print(transactions);
 	}
 }

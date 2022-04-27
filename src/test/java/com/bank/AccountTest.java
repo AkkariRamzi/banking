@@ -1,6 +1,7 @@
 package com.bank;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,21 +9,28 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.bank.entities.Account;
+import com.bank.entities.Printer;
 import com.bank.entities.Transaction;
 import com.bank.exceptions.BalanceInsufficientException;
 import com.bank.utilities.DateFormat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AccountTest {
 	private Account account;
 
 	private DateFormat dateformat;
+	@Mock
+	private Printer printer;
 
 	@Before
 	public void setUp() {
 		dateformat = new DateFormat();
-		account = new Account("1234", new BigDecimal(500), dateformat);
+		account = new Account("1234", new BigDecimal(500), dateformat, printer);
 
 	}
 
@@ -73,5 +81,15 @@ public class AccountTest {
 		account.setBalance(new BigDecimal(500));
 		LocalDate withdrawalDate = LocalDate.of(2020, 6, 24);
 		account.withdrawal(new BigDecimal(600).negate(), withdrawalDate);
+	}
+
+	/**
+	 * Print Account history Test
+	 */
+	@Test
+	public void printStatement() {
+		account.setBalance(new BigDecimal(500));
+		account.printStatement();
+		verify(printer).print(account.getTransactions());
 	}
 }
