@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.bank.entities.Account;
 import com.bank.entities.Transaction;
+import com.bank.exceptions.BalanceInsufficientException;
 import com.bank.utilities.DateFormat;
 
 public class AccountTest {
@@ -48,4 +49,29 @@ public class AccountTest {
 
 	}
 
+	/**
+	 * withdrwal success test
+	 * 
+	 * @throws BalanceInsufficientException
+	 */
+	@Test
+	public void withdrawal() throws BalanceInsufficientException {
+		LocalDate withdrawalDate = LocalDate.of(2020, 6, 24);
+		account.withdrawal(new BigDecimal(50), withdrawalDate);
+		List<Transaction> transactions = account.getTransactions();
+		assertEquals(transactions.size(), 1);
+		assertEquals(transactions.get(0).getCurrentBalance(), BigDecimal.valueOf(450));
+	}
+
+	/**
+	 * withdrwal faillure test
+	 * 
+	 * @throws BalanceInsufficientException
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void withdraw_account_negative_amount() throws BalanceInsufficientException {
+		account.setBalance(new BigDecimal(500));
+		LocalDate withdrawalDate = LocalDate.of(2020, 6, 24);
+		account.withdrawal(new BigDecimal(600).negate(), withdrawalDate);
+	}
 }
